@@ -40,3 +40,7 @@ changed_files.txt
 *.swp
 *.swo
 transcripts/output_transcript.txt
+
+# Voice recordings
+voice-record/
+.venv

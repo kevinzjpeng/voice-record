@@ -1,12 +1,39 @@
 # voice-record
 
-Automatic Cantonese voice transcription using GitHub Actions and OpenAI Whisper Large.
+Cantonese voice transcription using OpenAI Whisper Large model.
 
 ## 🎯 Overview
 
-This repository automatically transcribes voice recordings to Cantonese text using OpenAI's Whisper Large model. Simply upload your audio files, and GitHub Actions will handle the transcription for you!
+This repository provides tools to transcribe voice recordings to Cantonese text using OpenAI's Whisper Large model.
 
-## 🚀 How to Use
+## 🚀 Two Ways to Transcribe:
+
+### Option 1: Google Colab (Recommended - Fast & Free GPU!)
+
+1. **Open the notebook in Google Colab:**
+   - Upload `transcribe_cantonese.ipynb` to Google Colab, or
+   - Click this badge: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kevinzjpeng/voice-record/blob/main/transcribe_cantonese.ipynb)
+
+2. **Enable GPU acceleration:**
+   - Go to **Runtime → Change runtime type → Hardware accelerator → GPU**
+
+3. **Run all cells** (Runtime → Run all)
+
+4. **Upload your audio files** when prompted
+
+5. **Download transcripts** automatically
+
+**Advantages:**
+- ⚡ Fast processing with free GPU
+- 🆓 No cost
+- 🎯 Interactive and immediate results
+- 📱 Works from any device with a browser
+
+### Option 2: GitHub Actions (Automatic)
+
+Automatically transcribe files when you push them to the repository.
+
+#### Steps:
 
 1. **Add your voice recording** to the `voice-record/` directory:
    ```bash

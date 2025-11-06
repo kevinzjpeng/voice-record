@@ -1,0 +1,106 @@
+name: Trigger Colab Transcription
+
+on:
+  push:
+    paths:
+      - 'voice-record/**/*.mp3'
+      - 'voice-record/**/*.wav'
+      - 'voice-record/**/*.m4a'
+      - 'voice-record/**/*.flac'
+      - 'voice-record/**/*.ogg'
+
+jobs:
+  trigger-colab:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Get changed audio files
+        id: changed-files
+        run: |
+          echo "Getting changed audio files..."
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | \
+            grep -E '\.(mp3|wav|m4a|flac|ogg)$' > changed_files.txt || true
+          
+          if [ -s changed_files.txt ]; then
+            echo "has_audio=true" >> $GITHUB_OUTPUT
+            echo "Files to transcribe:"
+            cat changed_files.txt
+          else
+            echo "has_audio=false" >> $GITHUB_OUTPUT
+            echo "No audio files changed"
+          fi
+      
+      - name: Trigger Colab webhook
+        if: steps.changed-files.outputs.has_audio == 'true'
+        env:
+          COLAB_WEBHOOK_URL: ${{ secrets.COLAB_WEBHOOK_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+        run: |
+          if [ -z "$COLAB_WEBHOOK_URL" ]; then
+            echo "⚠️  COLAB_WEBHOOK_URL not configured"
+            echo "Skipping Colab execution. See COLAB_SETUP.md for setup instructions."
+            echo ""
+            echo "💡 You can:"
+            echo "  1. Set up webhook (see COLAB_SETUP.md)"
+            echo "  2. Use manual Colab notebook (transcribe_cantonese.ipynb)"
+            echo "  3. Enable local GitHub Actions transcription (transcribe.yml)"
+            exit 0
+          fi
+          
+          # Prepare webhook payload
+          AUDIO_FILES=$(cat changed_files.txt | jq -R -s -c 'split("\n")[:-1]')
+          
+          # Create payload
+          PAYLOAD=$(cat <<EOF
+          {
+            "repository_url": "https://github.com/${{ github.repository }}.git",
+            "audio_files": $AUDIO_FILES,
+            "commit": "${{ github.sha }}",
+            "pusher": "${{ github.actor }}"
+          }
+          EOF
+          )
+          
+          echo "Sending request to Colab webhook..."
+          echo "Payload: $PAYLOAD"
+          
+          # Calculate signature if secret is set
+          if [ -n "$WEBHOOK_SECRET" ]; then
+            SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$WEBHOOK_SECRET" | sed 's/^.* //')
+            SIGNATURE_HEADER="X-Hub-Signature-256: sha256=$SIGNATURE"
+          else
+            SIGNATURE_HEADER=""
+          fi
+          
+          # Send webhook request
+          RESPONSE=$(curl -s -X POST "$COLAB_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "$SIGNATURE_HEADER" \
+            -d "$PAYLOAD" \
+            -w "\nHTTP_CODE:%{http_code}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep HTTP_CODE | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE/d')
+          
+          echo "Response: $BODY"
+          echo "HTTP Code: $HTTP_CODE"
+          
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "201" ]; then
+            echo "✓ Colab webhook triggered successfully!"
+            echo "Transcription is processing on Colab with GPU acceleration."
+            echo "Results will be committed automatically when complete."
+          else
+            echo "⚠️  Webhook request failed (HTTP $HTTP_CODE)"
+            echo "Colab server may not be running. See COLAB_SETUP.md for troubleshooting."
+          fi

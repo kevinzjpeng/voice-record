@@ -2,36 +2,78 @@
 
 Cantonese voice transcription using OpenAI Whisper Large model.
 
+🚀 **New!** [Quick Start Guide](QUICKSTART.md) - Get started in 5 minutes!
+
 ## 🎯 Overview
 
-This repository provides tools to transcribe voice recordings to Cantonese text using OpenAI's Whisper Large model.
+This repository provides multiple ways to transcribe voice recordings to Cantonese text using OpenAI's Whisper Large model with GPU acceleration.
 
-## 🚀 Two Ways to Transcribe:
+## 🚀 Three Ways to Transcribe:
 
-### Option 1: Google Colab (Recommended - Fast & Free GPU!)
+### Option 1: Google Colab - Manual (Recommended ⭐)
+
+Perfect for on-demand transcription with GPU acceleration.
 
 1. **Open the notebook in Google Colab:**
    - Upload `transcribe_cantonese.ipynb` to Google Colab, or
-   - Click this badge: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kevinzjpeng/voice-record/blob/main/transcribe_cantonese.ipynb)
+   - Click: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kevinzjpeng/voice-record/blob/main/transcribe_cantonese.ipynb)
 
-2. **Enable GPU acceleration:**
-   - Go to **Runtime → Change runtime type → Hardware accelerator → GPU**
+2. **Enable GPU** → Runtime → Change runtime type → GPU
 
-3. **Run all cells** (Runtime → Run all)
+3. **Run all cells** → Upload files when prompted
 
-4. **Upload your audio files** when prompted
-
-5. **Download transcripts** automatically
+4. **Download transcripts** automatically
 
 **Advantages:**
-- ⚡ Fast processing with free GPU
-- 🆓 No cost
-- 🎯 Interactive and immediate results
-- 📱 Works from any device with a browser
+- ⚡ Fast with free GPU
+-  Interactive and immediate
+- 📱 Works from any device
 
-### Option 2: GitHub Actions (Automatic)
+### Option 2: Google Colab - Semi-Automated 🚀
 
-Automatically transcribe files when you push them to the repository.
+GitHub Actions notifies you, Colab does the transcription automatically.
+
+1. **Setup** (one-time):
+   - Push audio files to `voice-record/`
+   - GitHub Actions triggers workflow
+   - Opens notebook with files pre-loaded
+
+2. **Usage:**
+   ```bash
+   git add voice-record/your-audio.mp3
+   git commit -m "Add recording"
+   git push
+   ```
+
+3. **Transcribe:**
+   - Click Colab link from GitHub Actions
+   - Files are already loaded from your repo
+   - Run cells, transcripts auto-commit back
+
+**Use the automated notebook:** `transcribe_colab_automated.ipynb`
+
+**Advantages:**
+- 🔄 Semi-automated workflow
+- 🎯 Files pre-loaded from repo
+- ⚡ GPU acceleration
+- 📤 Auto-commit results
+
+📖 **Detailed setup:** See [COLAB_SETUP.md](COLAB_SETUP.md)
+
+---
+
+## 📂 Repository Files
+
+- **`transcribe_cantonese.ipynb`** - Manual Colab notebook
+- **`transcribe_colab_automated.ipynb`** - GitHub-integrated notebook  
+- **`colab_webhook_server.ipynb`** - Webhook server for full automation
+- **`QUICKSTART.md`** - Quick setup guide
+- **`COLAB_SETUP.md`** - Detailed setup instructions
+- **`WORKFLOW.md`** - Architecture and workflow diagrams
+
+---### Option 3: GitHub Actions (Fully Automatic)
+
+Automatically transcribe when you push files (no GPU, slower).
 
 #### Steps:
 

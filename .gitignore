@@ -39,7 +39,7 @@ changed_files.txt
 .idea/
 *.swp
 *.swo
-transcripts/output_transcript.txt
+transcripts/
 
 # Voice recordings
 voice-record/

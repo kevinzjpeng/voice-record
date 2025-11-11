@@ -6,9 +6,39 @@ Cantonese voice transcription using OpenAI Whisper Large model.
 
 ## 🎯 Overview
 
-This repository provides multiple ways to transcribe voice recordings to Cantonese text using OpenAI's Whisper Large model with GPU acceleration.
+This repository provides multiple ways to transcribe voice recordings to Cantonese text and YouTube videos using OpenAI's Whisper Large model with GPU acceleration. Now with AI-powered summarization!
 
-## 🚀 Three Ways to Transcribe:
+## 🚀 Transcription Options:
+
+### 🎬 YouTube Video Transcription (NEW!)
+
+Transcribe any YouTube video with optional AI summary - perfect for lectures, tutorials, podcasts!
+
+1. **Open the notebook in Google Colab:**
+   - Upload `transcribe_youtube.ipynb` to Google Colab, or
+   - Click: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kevinzjpeng/voice-record/blob/main/transcribe_youtube.ipynb)
+
+2. **Enable GPU** (optional) → Runtime → Change runtime type → GPU
+
+3. **Run the cell** → Paste YouTube URL when prompted
+
+4. **Optional AI Summary:**
+   - Get a free API key from [Groq](https://console.groq.com/keys)
+   - Paste when prompted for intelligent summary
+   - Or press Enter to skip and just get transcript
+
+5. **Download** transcript (+ summary) automatically
+
+**Features:**
+- ✨ AI-powered summary (optional, using Llama 3.3 70B)
+- 🎯 Auto-detects language
+- ⏱️ Timestamped segments
+- 📥 Instant download
+- 🧹 Auto-cleanup
+
+---
+
+## 🎙️ Audio File Transcription:
 
 ### Option 1: Google Colab - Manual (Recommended ⭐)
 
@@ -64,7 +94,8 @@ GitHub Actions notifies you, Colab does the transcription automatically.
 
 ## 📂 Repository Files
 
-- **`transcribe_cantonese.ipynb`** - Manual Colab notebook
+- **`transcribe_youtube.ipynb`** - 🎬 NEW! YouTube video transcription with AI summary
+- **`transcribe_cantonese.ipynb`** - Manual Colab notebook for audio files
 - **`transcribe_colab_automated.ipynb`** - GitHub-integrated notebook  
 - **`colab_webhook_server.ipynb`** - Webhook server for full automation
 - **`QUICKSTART.md`** - Quick setup guide
@@ -101,20 +132,60 @@ Automatically transcribe when you push files (no GPU, slower).
 
 ## 📁 Supported Audio Formats
 
+**For audio files:**
 - MP3 (`.mp3`)
 - WAV (`.wav`)
 - M4A (`.m4a`)
 - FLAC (`.flac`)
 - OGG (`.ogg`)
 
+**For YouTube:**
+- Any valid YouTube URL
+- Auto-extracts audio in best quality
+- Works with videos of any length
+
 ## 📝 Output Format
 
 Each transcript file includes:
 - Full transcript text
+- Auto-detected language
 - Detailed segments with timestamps
+- **NEW:** Optional AI summary (overview, key points, takeaways)
 - Format: `[HH:MM:SS -> HH:MM:SS] transcript text`
 
-Example:
+**Example with AI Summary:**
+```
+YouTube Transcript
+URL: https://youtube.com/watch?v=...
+Language: English
+==============================
+
+🧠 AI SUMMARY
+==============================
+This video discusses... [AI-generated overview]
+
+Key Points:
+• Point 1
+• Point 2
+• Point 3
+
+Main Takeaways:
+...
+
+==============================
+
+📝 FULL TRANSCRIPT
+==============================
+Hello everyone, today we're going to...
+
+==============================
+⏱️ DETAILED SEGMENTS
+==============================
+[00:00:00 → 00:00:05] Hello everyone, today we're going to...
+[00:00:05 → 00:00:12] First, let's talk about...
+```
+
+**Example for audio files:**
 ```
 Transcript of: recording.mp3
 Language: Cantonese/Chinese
@@ -131,17 +202,33 @@ Detailed segments:
 ## 🔧 Technical Details
 
 - **Model**: OpenAI Whisper Large
-- **Language**: Chinese (Cantonese)
-- **Platform**: GitHub Actions (Ubuntu)
-- **Python Version**: 3.10
+- **Language**: Auto-detect (or specify Cantonese/Chinese)
+- **AI Summary**: Groq API with Llama 3.3 70B (optional, free)
+- **Platform**: Google Colab (GPU) or GitHub Actions (CPU)
+- **Python Version**: 3.10+
+
+## 🤖 AI Summary Features
+
+The YouTube transcription notebook includes optional AI-powered summarization:
+
+- **Provider:** Groq (free API)
+- **Model:** Llama 3.3 70B Versatile
+- **Speed:** ~30 seconds per summary
+- **Output:** 
+  - Brief overview (2-3 sentences)
+  - Key points (bullet format)
+  - Main takeaways
+- **Setup:** Get free API key at [console.groq.com/keys](https://console.groq.com/keys)
 
 ## 📋 Requirements
 
-No local setup required! Everything runs on GitHub Actions. However, if you want to run locally:
+No local setup required! Everything runs on Google Colab or GitHub Actions. 
+
+However, if you want to run locally:
 
 ```bash
 # Install dependencies
-pip install openai-whisper torch
+pip install openai-whisper torch yt-dlp groq
 
 # Install ffmpeg (required by Whisper)
 # macOS:
@@ -150,8 +237,10 @@ brew install ffmpeg
 # Ubuntu/Debian:
 sudo apt-get install ffmpeg
 
-# Run transcription
+# Transcribe audio file
 python scripts/transcribe.py
+
+# For YouTube videos with AI summary, see transcribe_youtube.ipynb
 ```
 
 ## ⚙️ Workflow Configuration

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script to convert WAV files to MP3 format using ffmpeg.
-Processes all WAV files in the voice-record directory.
+Processes all WAV files recursively in the entire /opt/source/AI directory.
 """
 
 import os
@@ -64,26 +64,27 @@ def main():
     if not check_ffmpeg():
         sys.exit(1)
     
-    # Get the project root directory
+    # Get the AI project root directory
     script_dir = Path(__file__).parent
-    project_root = script_dir.parent
-    voice_record_dir = project_root / 'voice-record'
+    project_root = script_dir.parent.parent  # Go up to the AI directory
     
-    # Check if voice-record directory exists
-    if not voice_record_dir.exists():
-        print(f"✗ Directory not found: {voice_record_dir}")
+    # Check if AI directory exists
+    if not project_root.exists():
+        print(f"✗ Directory not found: {project_root}")
         sys.exit(1)
     
-    # Find all WAV files
-    wav_files = list(voice_record_dir.glob('*.wav'))
+    # Find all WAV files recursively in the entire AI directory
+    wav_files = list(project_root.rglob('*.wav'))
     
     if not wav_files:
-        print("No WAV files found in the voice-record directory")
+        print(f"No WAV files found in {project_root} and its subdirectories")
         return
     
-    print(f"Found {len(wav_files)} WAV file(s) to convert:")
+    print(f"Found {len(wav_files)} WAV file(s) to convert in {project_root}:")
     for wav_file in wav_files:
-        print(f"  - {wav_file.name}")
+        # Display relative path for clarity
+        relative_path = wav_file.relative_to(project_root)
+        print(f"  - {relative_path}")
     
     # Convert each WAV file
     converted_count = 0
